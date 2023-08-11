@@ -61,7 +61,7 @@ namespace raclib {
         void print_impl(std::basic_ostream<CharT, Traits>& os, print_alignment align, const T& x, std::index_sequence<I...>) {
             using std::get;
             constexpr char auto_del = (detail::is_multi_output_v<element_printer_t<I>> || ...) ? '\n' : ' ';
-            char del
+            [[maybe_unused]] char del
                 = align == print_alignment::horizontal ? ' '
                 : align == print_alignment::vertical ? '\n'
                 : auto_del;
@@ -111,9 +111,13 @@ namespace raclib {
         print(std::cout, align, std::forward<Args>(args)...);
     }
 
-    template <class... Args>
-    void print(Args&&... args) {
-        print(std::cout, print_alignment::automatic, std::forward<Args>(args)...);
+    void print() {
+        print(std::cout, print_alignment::automatic);
+    }
+
+    template <class U, class... Args, std::enable_if_t<not std::is_base_of_v<std::ios_base, std::decay_t<U>>>* = nullptr>
+    void print(U&& u, Args&&... args) {
+        print(std::cout, print_alignment::automatic, std::forward<U>(u), std::forward<Args>(args)...);
     }
 
     template <class CharT, class Traits, class... Args>
@@ -132,8 +136,12 @@ namespace raclib {
         println(std::cout, align, std::forward<Args>(args)...);
     }
 
-    template <class... Args>
-    void println(Args&&... args) {
-        println(std::cout, print_alignment::automatic, std::forward<Args>(args)...);
+    void println() {
+        println(std::cout, print_alignment::automatic);
+    }
+
+    template <class U, class... Args, std::enable_if_t<not std::is_base_of_v<std::ios_base, std::decay_t<U>>>* = nullptr>
+    void println(U&& u, Args&&... args) {
+        println(std::cout, print_alignment::automatic, std::forward<U>(u), std::forward<Args>(args)...);
     }
 }

@@ -171,8 +171,13 @@ namespace raclib {
         return scanner<T, CharT, Traits>{}.scan(is, std::forward<Args>(args)...);
     }
 
-    template <class T = void, class... Args>
-    auto scan(Args&&... args) {
-        return scan<T>(std::cin, std::forward<Args>(args)...);
+    template <class T = void>
+    auto scan() {
+        return scan<T>(std::cin);
+    }
+
+    template <class T = void, class U, class... Args, std::enable_if_t<not std::is_base_of_v<std::ios_base, std::decay_t<U>>>* = nullptr>
+    auto scan(U&& u, Args&&... args) {
+        return scan<T>(std::cin, std::forward<U>(u), std::forward<Args>(args)...);
     }
 }
