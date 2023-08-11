@@ -56,9 +56,7 @@ namespace raclib {
     }
 
     namespace marker {
-        struct decrement {
-            decrement() = delete;
-        };
+        struct decrement_t {} inline constexpr decrement;
     }
 
     template <class T = void, class CharT = char, class Traits = std::char_traits<CharT>, class = void>
@@ -71,7 +69,7 @@ namespace raclib {
             return t;
         }
 
-        T scan(std::basic_istream<CharT, Traits>& is, marker::decrement) {
+        T scan(std::basic_istream<CharT, Traits>& is, marker::decrement_t) {
             T t = scan(is);
             --t;
             return t;
